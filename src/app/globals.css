@@ -1,0 +1,112 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0b1220;        /* deep navy */
+  --color-secondary: #f8fafc;      /* soft white */
+  --color-accent: #d97706;         /* rich gold */
+  --color-text-main: #0f172a;
+  --color-text-muted: #64748b;
+ 
+
+  /* 1. Define the Keyframes */
+  @keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+
+  /* 2. Map Keyframes to Animation Names */
+  --animation-fade-in: fade-in 0.5s ease-out;
+  --animation-shake: shake 0.2s ease-in-out 0s 2;
+}
+
+@layer components {
+  /* 3. The classes now work because 'fade-in' is defined above */
+  .animate-fade-in {
+    animation: var(--animation-fade-in);
+  }
+  
+  .animate-shake {
+    animation: var(--animation-shake);
+  }
+@layer utilities {
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+  .input-style {
+    @apply w-full bg-slate-50 border border-slate-200 py-3.5 px-4 rounded-xl outline-none 
+           transition-all duration-200 text-sm text-primary font-medium
+           focus:ring-4 focus:ring-accent/5 focus:border-accent focus:bg-white;
+  }
+
+  .btn-primary {
+    @apply bg-primary hover:bg-slate-800 text-white font-bold py-4 rounded-xl 
+           transition-all duration-300 flex items-center justify-center gap-2 
+           uppercase tracking-widest text-[11px] shadow-lg shadow-primary/20;
+  }
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+  .auth-card {
+    @apply w-full bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] 
+           border border-slate-100 p-8 md:p-12 duration-700;
+    /* Removed animate-in fade-in from here to prevent build errors */
+  }
+}
+/* icon hover glow */
+.icon-hover:hover {
+  transform: scale(1.12);
+  filter: drop-shadow(0 0 6px rgba(99,102,241,.45));
+}
+
+/* cart badge pulse */
+@keyframes pulse-soft {
+  0%,100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+.cart-pulse {
+  animation: pulse-soft 1.6s infinite;
+}
+
+/* mega menu smooth */
+.mega-menu {
+  transition: all .35s ease;
+}
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-down {
+  animation: slide-down 0.3s ease-out;
+}
+
