@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState, Suspense, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { productService } from "@/services/product.service";
 import { authService } from "@/services/auth.service";
@@ -7,21 +7,34 @@ import { useCartStore } from "@/store/cart.store";
 import { getSessionId } from "@/utils/session";
 import { Product } from "@/types/product";
 import ProductCard from "@/components/product/ProductCard";
-import { Loader2, SlidersHorizontal, PackageX, CheckCircle2, X, ChevronDown } from "lucide-react";
-import ProductSkeleton from "@/components/product/ProductSkeleton";
-import Loader from "@/components/common/Loader";
+import Loader from "@/app/loading";
 
- 
- 
+import {
+  SlidersHorizontal,
+  PackageX,
+  CheckCircle2,
+  X,
+  Grid2X2,
+  LayoutGrid,
+  Rows3,
+} from "lucide-react";
+
 function ProductListContent() {
   const searchParams = useSearchParams();
+  const { addItem } = useCartStore();
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [showToast, setShowToast] = useState(false);
   const [toastMsg, setToastMsg] = useState("");
 
-  const { addItem } = useCartStore();
+  const [inStockOnly, setInStockOnly] = useState(false);
+  const [priceRange, setPriceRange] = useState(10000);
+  const [sortBy, setSortBy] = useState("best");
+  const [gridView, setGridView] = useState(4);
+
   const searchMainMenu = searchParams.get("mainMenu");
   const searchCategory = searchParams.get("category");
   const searchType = searchParams.get("type");
@@ -32,10 +45,10 @@ function ProductListContent() {
       try {
         let data;
         if (searchMainMenu || searchCategory || searchType) {
-          data = await productService.getFilteredCatalog({ 
-            mainMenu: searchMainMenu || undefined, 
-            category: searchCategory || undefined, 
-            type: searchType || undefined 
+          data = await productService.getFilteredCatalog({
+            mainMenu: searchMainMenu || undefined,
+            category: searchCategory || undefined,
+            type: searchType || undefined,
           });
         } else {
           data = await productService.getFullCatalog();
@@ -50,110 +63,150 @@ function ProductListContent() {
     loadData();
   }, [searchMainMenu, searchCategory, searchType]);
 
+  const filteredProducts = useMemo(() => {
+    let filtered = [...products];
+
+    if (inStockOnly) {
+      filtered = filtered.filter((p) =>
+        p.variants?.some((v) => v.stock > 0)
+      );
+    }
+
+    filtered = filtered.filter(
+      (p) => p.variants?.[0]?.price <= priceRange
+    );
+
+    if (sortBy === "low") {
+      filtered.sort(
+        (a, b) => a.variants[0].price - b.variants[0].price
+      );
+    } else if (sortBy === "high") {
+      filtered.sort(
+        (a, b) => b.variants[0].price - a.variants[0].price
+      );
+    }
+
+    return filtered;
+  }, [products, inStockOnly, priceRange, sortBy]);
+
   const handleQuickAdd = async (product: Product) => {
     const user = authService.getCurrentUser();
     const variant = product.variants[0];
-
     if (!variant) return;
 
-    try {
-      await addItem({
-        userId: user ? user.id : null,
-        sessionId: getSessionId(),
-        productId: product.pD_ID,
-        variantId: variant.pV_Id,
-        qty: 1
-      });
+    await addItem({
+      userId: user ? user.id : null,
+      sessionId: getSessionId(),
+      productId: product.pD_ID,
+      variantId: variant.pV_Id,
+      qty: 1,
+    });
 
-      setToastMsg(`${product.pD_NAME} added to your bag.`);
-      setShowToast(true);
-      setTimeout(() => setShowToast(false), 3000);
-    } catch (err) {
-      console.error("Quick add failed", err);
-    }
+    setToastMsg(`${product.pD_NAME} added to your bag`);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 3000);
   };
 
+  if (loading) return <Loader />;
 
-  if (loading) return (
-     <Loader/>
-  );
+  const gridClass =
+    gridView === 2
+      ? "grid-cols-2"
+      : gridView === 3
+      ? "grid-cols-2 md:grid-cols-3"
+      : "grid-cols-2 md:grid-cols-3 xl:grid-cols-4";
 
   return (
     <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-8 relative">
-      {/* Success Toast */}
+      
+      {/* Toast */}
       {showToast && (
-        <div className="fixed top-24 right-6 z-[100] animate-in fade-in slide-in-from-right-4">
-          <div className="bg-white border border-slate-100 shadow-2xl rounded-2xl p-4 flex items-center gap-4 min-w-[300px]">
-            <CheckCircle2 className="h-5 w-5 text-green-500" />
-            <div className="flex-1 text-xs font-bold text-primary">{toastMsg}</div>
-            <X className="h-4 w-4 text-slate-300 cursor-pointer" onClick={() => setShowToast(false)} />
+        <div className="fixed top-24 right-6 z-50">
+          <div className="bg-white shadow-xl rounded-xl px-4 py-3 flex items-center gap-3">
+            <CheckCircle2 className="text-green-500 w-5 h-5" />
+            <span className="text-sm font-semibold">{toastMsg}</span>
+            <X className="w-4 h-4 cursor-pointer" onClick={() => setShowToast(false)} />
           </div>
         </div>
       )}
 
-      {/* Header Section */}
-      <div className="mb-8">
-        <div className="text-xs text-slate-400 mb-2">Home &gt; {searchMainMenu || "Catalog"}</div>
-        <h1 className="text-1xl md:text-3xl font-semibold text-primary uppercase mb-6">
-          {searchCategory || searchMainMenu || searchType}
-        </h1>
-        
-        <div className="flex items-center justify-between border-y border-slate-100 py-4">
-          <button 
-            onClick={() => setShowMobileFilters(!showMobileFilters)}
-            className="flex lg:hidden items-center gap-2 font-bold uppercase text-xs"
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
+        <div>
+          <p className="text-xs text-slate-400">
+            Home / {searchMainMenu || "Catalog"}
+          </p>
+          <h1 className="text-2xl md:text-3xl font-bold uppercase">
+            {searchCategory || searchMainMenu || searchType || "All Products"}
+          </h1>
+        </div>
+
+        <div className="flex items-center gap-4">
+          <select
+            onChange={(e) => setSortBy(e.target.value)}
+            className="border rounded-lg px-3 py-2 text-sm"
           >
-            <SlidersHorizontal className="w-4 h-4" /> Filters
-          </button>
-          <div className="hidden lg:block text-xs font-bold text-slate-400 uppercase tracking-widest">
-            Filters
-          </div>
-          <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-2 text-xs font-bold">
-              <span className="text-slate-400">Sort by</span>
-              <select className="bg-transparent focus:outline-none">
-                <option>Best selling</option>
-                <option>Price: Low to High</option>
-              </select>
-            </div>
-            <div className="text-xs font-bold text-slate-400">
-              Showing <span className="text-primary">{products.length}</span> items
-            </div>
+            <option value="best">Best Selling</option>
+            <option value="low">Price: Low → High</option>
+            <option value="high">Price: High → Low</option>
+          </select>
+
+          {/* Grid Toggle */}
+          <div className="flex items-center gap-2">
+            <Grid2X2 onClick={() => setGridView(2)} className="cursor-pointer" />
+            <LayoutGrid onClick={() => setGridView(3)} className="cursor-pointer" />
+            <Rows3 onClick={() => setGridView(4)} className="cursor-pointer" />
           </div>
         </div>
       </div>
 
-      <div className="flex gap-10">
-        {/* Desktop Sidebar Filter */}
-        <aside className="hidden lg:block w-64 shrink-0 space-y-8">
-          <div className="border-b pb-4">
-            <div className="flex justify-between items-center font-bold text-sm mb-4">Availability <ChevronDown className="w-4 h-4" /></div>
-            <div className="space-y-2 text-sm text-slate-600">
-              <label className="flex items-center gap-2"><input type="checkbox" className="rounded border-slate-300" /> In stock ({products.length})</label>
-              <label className="flex items-center gap-2 text-slate-300"><input type="checkbox" disabled className="rounded border-slate-300" /> Out of stock (0)</label>
-            </div>
+      <div className="flex gap-8">
+        
+        {/* Sidebar */}
+        <aside className="hidden lg:block w-64 space-y-6">
+          <div>
+            <h3 className="font-semibold mb-3">Availability</h3>
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={inStockOnly}
+                onChange={() => setInStockOnly(!inStockOnly)}
+              />
+              In Stock Only
+            </label>
           </div>
-          <div className="border-b pb-4">
-            <div className="flex justify-between items-center font-bold text-sm mb-4">Price <ChevronDown className="w-4 h-4" /></div>
+
+          <div>
+            <h3 className="font-semibold mb-3">Max Price: ₹{priceRange}</h3>
+            <input
+              type="range"
+              min="0"
+              max="20000"
+              value={priceRange}
+              onChange={(e) => setPriceRange(Number(e.target.value))}
+              className="w-full"
+            />
           </div>
         </aside>
 
-        {/* Main Grid */}
+        {/* Product Grid */}
         <div className="flex-1">
-          {products.length > 0 ? (
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-4 gap-y-8 md:gap-8">
-              {products.map((product) => (
-                <ProductCard 
-                  key={product.pD_ID} 
-                  product={product} 
-                  onQuickAdd={() => handleQuickAdd(product)} 
+          {filteredProducts.length > 0 ? (
+            <div className={`grid ${gridClass} gap-6`}>
+              {filteredProducts.map((product) => (
+                <ProductCard
+                  key={product.pD_ID}
+                  product={product}
+                  onQuickAdd={() => handleQuickAdd(product)}
                 />
               ))}
             </div>
           ) : (
             <div className="py-24 text-center">
               <PackageX className="h-16 w-16 text-slate-200 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-primary">No products found</h3>
+              <h3 className="text-xl font-bold">
+                No products match your filters
+              </h3>
             </div>
           )}
         </div>

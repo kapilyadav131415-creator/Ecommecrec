@@ -71,211 +71,137 @@ export default function Navbar() {
     router.push("/login");
   };
 
-  return (
-    <header className="w-full sticky top-0 z-[100] bg-white border-b border-slate-100">
-      {/* 1. TOP BAR (Simple & Clean) */}
-      <div className="bg-slate-50 border-b border-slate-100 text-slate-600 text-xs py-2 px-4 md:px-8 hidden md:flex justify-between items-center">
-        <div className="flex gap-4 items-center">
-          <Link href="/track-order" className="hover:text-black transition flex items-center gap-1.5">
-            <MapPin className="h-3.5 w-3.5" /> Track Order
-          </Link>
-          <span className="w-px h-3 bg-slate-300" />
-          <p className="flex items-center gap-1.5 font-medium">
-            <Package className="h-3.5 w-3.5" /> Free Shipping on ₹2500+
-          </p>
-        </div>
-        <Link href="/wishlist" className="hover:text-black transition flex items-center gap-1.5">
-          <Heart className="h-3.5 w-3.5" /> Wishlist
+ return (
+  <header className="w-full sticky top-0 z-50 bg-black text-white shadow-lg">
+    
+    {/* TOP STRIP */}
+    <div className="hidden md:flex justify-between items-center px-8 py-2 text-xs bg-zinc-900 border-b border-zinc-800">
+      <p className="tracking-wider text-amber-400 font-semibold">
+        Premium Collection – Free Shipping on ₹2500+
+      </p>
+      <div className="flex items-center gap-6">
+        <Link href="/track-order" className="hover:text-amber-400 transition">
+          Track Order
+        </Link>
+        <Link href="/wishlist" className="hover:text-amber-400 transition">
+          Wishlist
         </Link>
       </div>
+    </div>
 
-      {/* 2. MAIN NAVBAR */}
-      <div className="mx-auto flex h-16 lg:h-20 max-w-7xl items-center justify-between px-4 md:px-8 gap-4">
-        {/* Mobile Menu Trigger & Logo */}
-        <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setIsMobileMenuOpen(true)} 
-            className="lg:hidden p-2 -ml-2 text-slate-700 active:bg-slate-100 rounded-full transition"
-          >
-            <Menu className="h-6 w-6" />
-          </button>
-          <Link href="/" className="text-xl md:text-2xl font-bold tracking-tight text-slate-900">
-            MY<span className="text-slate-500">SHOP</span>
-          </Link>
-        </div>
+    {/* MAIN NAVBAR */}
+    <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4">
+      
+      {/* LOGO */}
+      <Link href="/" className="text-2xl font-extrabold tracking-widest">
+        <span className="text-amber-400">MY</span>SHOP
+      </Link>
 
-        {/* Desktop Search */}
-        <div className="hidden lg:flex flex-1 max-w-md mx-8">
-          <div className="relative w-full">
-            <input 
-              type="text" 
-              placeholder="Search products..." 
-              className="w-full bg-slate-100 border-none rounded-lg py-2 pl-10 pr-4 text-sm focus:bg-white focus:ring-1 focus:ring-slate-300 transition-all"
-            />
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          </div>
-        </div>
+      {/* DESKTOP MENU */}
+      <nav className="hidden lg:flex items-center gap-8 relative">
+        {menuTree.map((l1) => (
+          <div key={l1.id} className="group relative">
+            <Link
+              href={getFilterUrl(l1)}
+              className="uppercase text-sm tracking-wide hover:text-amber-400 transition"
+            >
+              {l1.name}
+            </Link>
 
-        {/* Action Icons */}
-        <div className="flex items-center gap-1 md:gap-4">
-          {/* User Account Dropdown */}
-          <div className="hidden md:block group relative">
-            <button className="flex items-center gap-1.5 p-2 text-slate-700 hover:text-black transition">
-              <UserCircle className="h-6 w-6" />
-              <ChevronDown className="h-3.5 w-3.5 opacity-50 transition-transform group-hover:rotate-180" />
-            </button>
-            <div className="absolute right-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-              <div className="bg-white border border-slate-200 shadow-xl rounded-xl w-48 p-2 overflow-hidden">
-                {user ? (
-                  <>
-                    <div className="px-3 py-2 mb-1 border-b border-slate-50">
-                      <p className="text-[10px] uppercase font-bold text-slate-400">Welcome</p>
-                      <p className="text-sm font-semibold text-slate-800 truncate">{user.name}</p>
-                    </div>
-                    <Link href="/orders" className="flex items-center gap-3 px-3 py-2 text-sm text-slate-600 hover:bg-slate-50 rounded-lg transition">
-                      <ShoppingBag className="h-4 w-4" /> My Orders
+            {/* DROPDOWN */}
+            {l1.children!.length > 0 && (
+              <div className="absolute left-0 top-full mt-4 bg-zinc-900 border border-zinc-800 shadow-2xl rounded-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 p-8 min-w-[500px] grid grid-cols-2 gap-10">
+
+                {l1.children!.map((l2) => (
+                  <div key={l2.id}>
+                    <Link
+                      href={getFilterUrl(l2)}
+                      className="block text-amber-400 font-semibold mb-4 hover:underline"
+                    >
+                      {l2.name}
                     </Link>
-                    <button onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition mt-1">
-                      <LogOut className="h-4 w-4" /> Logout
-                    </button>
-                  </>
-                ) : (
-                  <Link href="/login" className="flex items-center gap-3 px-3 py-2.5 text-sm font-semibold text-white bg-slate-900 rounded-lg text-center justify-center hover:bg-slate-800 transition">
-                    Sign In
-                  </Link>
-                )}
-              </div>
-            </div>
-          </div>
 
-          {/* Cart Icon */}
-          <Link href="/cart" className="relative p-2 text-slate-700 hover:text-black transition rounded-full hover:bg-slate-100">
-            <ShoppingCart className="h-6 w-6" />
-            {cart && cart.cM_TotalQty > 0 && (
-              <span className="absolute top-1 right-1 h-4 w-4 bg-slate-900 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                {cart.cM_TotalQty}
-              </span>
-            )}
-          </Link>
-        </div>
-      </div>
-
-      {/* 3. DESKTOP NAVIGATION (Simple Labels) */}
-      <nav className="hidden lg:block">
-        <div className="max-w-7xl mx-auto px-8 h-12 flex items-center justify-center border-t border-slate-50">
-          <div className="flex gap-1 h-full">
-            {menuTree.map((l1) => (
-              <div key={l1.id} className="group h-full relative">
-                <Link 
-                  href={getFilterUrl(l1)} 
-                  className="h-full px-5 flex items-center gap-1 text-[13px] font-medium text-slate-600 hover:text-black transition-colors"
-                >
-                  {l1.name}
-                  {l1.children!.length > 0 && <ChevronDown className="h-3 w-3 opacity-40 group-hover:rotate-180" />}
-                </Link>
-
-                {l1.children!.length > 0 && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 bg-white border border-slate-200 shadow-2xl p-6 min-w-[400px] grid grid-cols-2 gap-8 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 rounded-b-xl">
-                    {l1.children!.map((l2) => (
-                      <div key={l2.id}>
-                        <Link href={getFilterUrl(l2)} className="text-sm font-bold text-slate-900 block mb-3 hover:underline">
-                          {l2.name}
-                        </Link>
-                        <ul className="space-y-1.5">
-                          {l2.children?.map((l3) => (
-                            <li key={l3.id}>
-                              <Link href={getFilterUrl(l3)} className="text-xs text-slate-500 hover:text-black transition-colors">
-                                {l3.name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+                    <ul className="space-y-2">
+                      {l2.children?.map((l3) => (
+                        <li key={l3.id}>
+                          <Link
+                            href={getFilterUrl(l3)}
+                            className="text-sm text-zinc-300 hover:text-white transition"
+                          >
+                            {l3.name}
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                )}
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        </div>
+        ))}
       </nav>
 
-      {/* 4. REFINED MOBILE SIDEBAR */}
-      <div className={`fixed inset-0 z-[200] ${isMobileMenuOpen ? "visible" : "invisible"}`}>
-        <div 
-          className={`absolute inset-0 bg-black/30 transition-opacity duration-300 ${isMobileMenuOpen ? "opacity-100" : "opacity-0"}`}
-          onClick={() => setIsMobileMenuOpen(false)}
-        />
+      {/* RIGHT SIDE */}
+      <div className="flex items-center gap-5">
 
-        <div className={`absolute top-0 left-0 h-full w-[280px] bg-white transition-transform duration-300 ease-in-out ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-          <div className="flex items-center justify-between p-5 border-b">
-            <span className="text-sm font-bold uppercase text-slate-400">Menu</span>
-            <button onClick={() => setIsMobileMenuOpen(false)}><X className="h-5 w-5" /></button>
-          </div>
+        {/* SEARCH */}
+        <div className="hidden lg:block relative">
+          <input
+            type="text"
+            placeholder="Search..."
+            className="bg-zinc-900 border border-zinc-800 rounded-full py-2 pl-4 pr-10 text-sm focus:outline-none focus:border-amber-400 transition"
+          />
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
+        </div>
 
-          <div className="overflow-y-auto h-[calc(100vh-140px)]">
-            {/* User Profile on Mobile */}
-            <div className="p-5 bg-slate-50 border-b">
-              {user ? (
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-3">
-                    <UserCircle className="h-10 w-10 text-slate-400" />
-                    <div className="flex-1 overflow-hidden">
-                      <p className="text-xs text-slate-400">Hello,</p>
-                      <p className="text-sm font-bold text-slate-900 truncate">{user.name}</p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 mt-2">
-                    <Link href="/orders" onClick={() => setIsMobileMenuOpen(false)} className="py-2 text-center text-xs font-semibold bg-white border rounded-lg text-slate-700">Orders</Link>
-                    <button onClick={handleLogout} className="py-2 text-center text-xs font-semibold bg-red-50 text-red-600 border border-red-100 rounded-lg">Logout</button>
-                  </div>
-                </div>
-              ) : (
-                <Link href="/login" onClick={() => setIsMobileMenuOpen(false)} className="flex items-center justify-center gap-2 w-full py-3 bg-slate-900 text-white rounded-lg text-sm font-bold">
-                  Sign In / Join
+        {/* ACCOUNT */}
+        <div className="group relative hidden md:block">
+          <button className="hover:text-amber-400 transition">
+            <User className="h-6 w-6" />
+          </button>
+
+          <div className="absolute right-0 top-full mt-3 w-48 bg-zinc-900 border border-zinc-800 rounded-xl shadow-xl opacity-0 invisible group-hover:visible group-hover:opacity-100 transition p-4">
+            {user ? (
+              <>
+                <p className="text-xs text-zinc-400 mb-3">
+                  Welcome, {user.name}
+                </p>
+                <Link
+                  href="/orders"
+                  className="block py-2 text-sm hover:text-amber-400"
+                >
+                  My Orders
                 </Link>
-              )}
-            </div>
-
-            {/* Navigation Links */}
-            <div className="p-2">
-              {menuTree.map((l1) => (
-                <div key={l1.id} className="mb-1">
-                  <button 
-                    onClick={() => setActiveMobileSub(activeMobileSub === l1.id ? null : l1.id)}
-                    className="w-full flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 text-sm font-semibold text-slate-700"
-                  >
-                    {l1.name}
-                    {l1.children!.length > 0 && <ChevronRight className={`h-4 w-4 transition-transform ${activeMobileSub === l1.id ? "rotate-90" : ""}`} />}
-                  </button>
-
-                  <div className={`overflow-hidden transition-all ${activeMobileSub === l1.id ? "max-h-[800px] mb-2" : "max-h-0"}`}>
-                    <div className="pl-4 py-2 space-y-4">
-                      {l1.children?.map((l2) => (
-                        <div key={l2.id}>
-                          <p className="text-xs font-bold text-slate-900 mb-2 uppercase tracking-wide">{l2.name}</p>
-                          <div className="grid gap-2 pl-3 border-l border-slate-100">
-                            {l2.children?.map((l3) => (
-                              <Link 
-                                key={l3.id} 
-                                href={getFilterUrl(l3)} 
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="text-sm text-slate-500 py-1"
-                              >
-                                {l3.name}
-                              </Link>
-                            ))}
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                <button
+                  onClick={handleLogout}
+                  className="block w-full text-left py-2 text-sm text-red-400 hover:text-red-300"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <Link
+                href="/login"
+                className="block bg-amber-400 text-black text-center py-2 rounded-lg font-semibold hover:bg-amber-300 transition"
+              >
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
+
+        {/* CART */}
+        <Link href="/cart" className="relative hover:text-amber-400 transition">
+          <ShoppingCart className="h-6 w-6" />
+          {cart && cart.cM_TotalQty > 0 && (
+            <span className="absolute -top-2 -right-2 bg-amber-400 text-black text-[10px] h-5 w-5 flex items-center justify-center rounded-full font-bold">
+              {cart.cM_TotalQty}
+            </span>
+          )}
+        </Link>
+
       </div>
-    </header>
-  );
+    </div>
+  </header>
+);
 }

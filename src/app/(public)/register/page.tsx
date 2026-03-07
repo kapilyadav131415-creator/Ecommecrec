@@ -2,22 +2,39 @@
 import { useState } from "react";
 import Link from "next/link";
 import { authService } from "@/services/auth.service";
-import { CheckCircle2, User, Phone, Mail, Lock, Loader2, Sparkles } from "lucide-react";
+import {
+  CheckCircle2,
+  User,
+  Phone,
+  Mail,
+  Lock,
+  Loader2,
+  Eye,
+  EyeOff
+} from "lucide-react";
 
 export default function RegisterPage() {
-  const [formData, setFormData] = useState({ name: "", mobileNo: "", emailId: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    mobileNo: "",
+    emailId: "",
+    password: "",
+  });
+
   const [isSuccess, setIsSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
       const res = await authService.register(formData);
       if (res.status === 1) setIsSuccess(true);
-      else setError(res.msg || "Registration could not be completed.");
+      else setError(res.msg || "Registration failed.");
     } catch (err: any) {
       setError(err.message || "Connection failed.");
     } finally {
@@ -27,14 +44,21 @@ export default function RegisterPage() {
 
   if (isSuccess) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4">
-        <div className="text-center animate-in zoom-in duration-700 max-w-sm">
-          <div className="bg-green-50 h-24 w-24 rounded-3xl flex items-center justify-center mx-auto mb-8 shadow-sm">
-            <CheckCircle2 className="h-12 w-12 text-green-500" />
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">
+        <div className="bg-white p-12 rounded-3xl shadow-2xl text-center max-w-md">
+          <div className="w-20 h-20 bg-emerald-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 className="h-10 w-10 text-emerald-500" />
           </div>
-          <h2 className="text-3xl font-serif font-bold text-primary">Account Verified</h2>
-          <p className="text-text-muted mt-4 mb-10 leading-relaxed">Your registration is complete. Welcome to the world of premium shopping.</p>
-          <Link href="/login" className="btn-primary px-12 inline-flex">
+          <h2 className="text-2xl font-bold text-primary mb-4">
+            Account Created Successfully 🎉
+          </h2>
+          <p className="text-slate-500 mb-8">
+            Welcome! Your account is ready. You can now log in and start shopping.
+          </p>
+          <Link
+            href="/login"
+            className="inline-block bg-primary text-white px-8 py-3 rounded-xl hover:bg-slate-900 transition"
+          >
             Go to Login
           </Link>
         </div>
@@ -43,64 +67,139 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-[90vh] flex items-center justify-center px-4 py-16">
-      <div className="auth-card max-w-xl">
-        <div className="mb-10 text-center">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-amber-50 rounded-2xl mb-6">
-            <Sparkles className="h-7 w-7 text-accent" />
-          </div>
-          <h1 className="text-3xl font-serif font-bold text-primary">Member Registration</h1>
-          <p className="text-text-muted text-sm mt-2">Join our exclusive shopping community</p>
-        </div>
+    <div className="min-h-screen flex">
 
-        <form onSubmit={handleRegister} className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
-          <div className="md:col-span-2 space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted ml-1">Full Name</label>
+      {/* Left Branding Section */}
+      <div className="hidden lg:flex w-1/2 bg-gradient-to-br from-slate-900 to-primary text-white items-center justify-center p-16">
+        <div className="max-w-md">
+          <h1 className="text-4xl font-bold leading-tight mb-6">
+            Join Our Community
+          </h1>
+          <p className="text-white/80 text-lg leading-relaxed">
+            Create your account and unlock exclusive deals, faster checkout,
+            and personalized recommendations.
+          </p>
+
+          <div className="mt-12 space-y-4 text-sm text-white/70">
+            <p>✔ Member-only discounts</p>
+            <p>✔ Order tracking</p>
+            <p>✔ Secure checkout</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Form Section */}
+      <div className="flex flex-1 items-center justify-center bg-slate-50 px-6 py-12">
+        <div className="w-full max-w-lg bg-white p-10 rounded-3xl shadow-2xl border border-slate-100">
+
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold text-primary mb-2">
+              Create Account
+            </h2>
+            <p className="text-sm text-slate-500">
+              Fill in your details below
+            </p>
+          </div>
+
+          <form onSubmit={handleRegister} className="space-y-6">
+
+            {/* Name */}
             <div className="relative">
               <User className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input required type="text" className="input-style pl-12" placeholder="Alex Morgan" 
-                onChange={(e) => setFormData({...formData, name: e.target.value})} />
+              <input
+                required
+                type="text"
+                placeholder="Full Name"
+                className="w-full h-12 pl-12 pr-4 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+              />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted ml-1">Mobile No.</label>
+            {/* Mobile */}
             <div className="relative">
               <Phone className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input required type="tel" className="input-style pl-12" placeholder="9876543210"
-                onChange={(e) => setFormData({...formData, mobileNo: e.target.value})} />
+              <input
+                required
+                type="tel"
+                placeholder="Mobile Number"
+                className="w-full h-12 pl-12 pr-4 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                onChange={(e) =>
+                  setFormData({ ...formData, mobileNo: e.target.value })
+                }
+              />
             </div>
-          </div>
 
-          <div className="space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted ml-1">Email ID</label>
+            {/* Email */}
             <div className="relative">
               <Mail className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input required type="email" className="input-style pl-12" placeholder="alex@choice.com"
-                onChange={(e) => setFormData({...formData, emailId: e.target.value})} />
+              <input
+                required
+                type="email"
+                placeholder="Email Address"
+                className="w-full h-12 pl-12 pr-4 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                onChange={(e) =>
+                  setFormData({ ...formData, emailId: e.target.value })
+                }
+              />
             </div>
-          </div>
 
-          <div className="md:col-span-2 space-y-2">
-            <label className="text-[10px] font-bold uppercase tracking-widest text-text-muted ml-1">Secret Password</label>
+            {/* Password */}
             <div className="relative">
               <Lock className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-              <input required type="password" minLength={6} className="input-style pl-12" placeholder="••••••••"
-                onChange={(e) => setFormData({...formData, password: e.target.value})} />
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                minLength={6}
+                placeholder="Password"
+                className="w-full h-12 pl-12 pr-12 rounded-xl border border-slate-200 focus:border-primary focus:ring-2 focus:ring-primary/20 outline-none transition"
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+              />
+              <div
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-slate-400"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </div>
             </div>
+
+            {/* Error */}
+            {error && (
+              <div className="bg-red-50 text-red-600 text-xs p-3 rounded-lg border border-red-100">
+                {error}
+              </div>
+            )}
+
+            {/* Button */}
+            <button
+              disabled={loading}
+              className="w-full h-12 bg-primary hover:bg-slate-900 text-white rounded-xl flex items-center justify-center gap-2 transition-all active:scale-[0.98]"
+            >
+              {loading ? (
+                <Loader2 className="animate-spin h-5 w-5" />
+              ) : (
+                "Create Account"
+              )}
+            </button>
+          </form>
+
+          <div className="mt-8 text-center text-sm text-slate-500">
+            Already have an account?{" "}
+            <Link
+              href="/login"
+              className="text-primary font-semibold hover:underline"
+            >
+              Sign In
+            </Link>
           </div>
-
-          {error && <div className="md:col-span-2 bg-red-50 text-red-600 text-[11px] p-4 rounded-xl">{error}</div>}
-
-          <button className="md:col-span-2 btn-primary mt-4">
-            {loading ? <Loader2 className="animate-spin h-4 w-4" /> : "Verify & Create Account"}
-          </button>
-        </form>
-
-        <p className="text-center mt-10 text-sm text-text-muted">
-          Already a member?{" "}
-          <Link href="/login" className="text-accent font-bold hover:underline">Sign In Here</Link>
-        </p>
+        </div>
       </div>
     </div>
   );
