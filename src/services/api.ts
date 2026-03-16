@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create an instance with your .NET API defaults
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://192.168.1.21:5286/api',
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'https://api.ayuwellnessprime.com/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
