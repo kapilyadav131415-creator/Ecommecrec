@@ -1,15 +1,26 @@
 import Link from "next/link";
 import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from "lucide-react";
-
+import Image from "next/image";
 export default function Footer() {
   return (
     <footer className="bg-black text-slate-300 border-t border-slate-800">
       <div className="mx-auto max-w-7xl px-6 py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-16">
           <div className="space-y-8">
-            <Link href="/" className="text-3xl  font-extrabold tracking-widest text-white">
-              MY<span className="text-amber-400">SHOP</span>
-            </Link>
+          <Link
+  href="/"
+  className="flex items-center gap-2 text-3xl font-extrabold tracking-widest text-white"
+>
+  <Image
+    src="/logo1.png"
+    alt="MYSHOP"
+    width={42}
+    height={42}
+    className="object-contain"
+  />
+
+  
+</Link>
             <p className="text-sm leading-relaxed text-slate-400">
               Defining modern luxury through curated craftsmanship and sustainable practices.
             </p>
