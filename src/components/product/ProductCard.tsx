@@ -30,7 +30,7 @@ export default function ProductCard({ product, onQuickAdd }: ProductCardProps) {
   const formatINR = (amount: number) =>
     new Intl.NumberFormat("en-IN", {
       style: "currency",
-      currency: "INR",
+      currency: "USD",
       maximumFractionDigits: 0,
     }).format(amount);
 
