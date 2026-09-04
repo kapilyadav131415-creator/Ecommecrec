@@ -164,9 +164,9 @@ export default function ProductDetailsPage({ params }: { params: Promise<{ slug:
           {/* PRICING & STOCK */}
           <div className="mb-6">
             <div className="flex items-baseline gap-3">
-              <span className="text-2xl sm:text-3xl font-bold text-primary">₹{selectedVariant?.actualPrice}</span>
+              <span className="text-2xl sm:text-3xl font-bold text-primary">${selectedVariant?.actualPrice}</span>
               {discount > 0 && (
-                <span className="text-sm text-slate-400 line-through font-medium">₹{selectedVariant?.price}</span>
+                <span className="text-sm text-slate-400 line-through font-medium">${selectedVariant?.price}</span>
               )}
             </div>
             

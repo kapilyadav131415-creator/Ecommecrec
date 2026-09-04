@@ -177,7 +177,7 @@ function ProductListContent() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Max Price: ₹{priceRange}</h3>
+            <h3 className="font-semibold mb-3">Max Price: ${priceRange}</h3>
             <input
               type="range"
               min="0"

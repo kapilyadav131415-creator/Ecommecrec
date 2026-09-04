@@ -247,7 +247,7 @@ export default function CheckoutPage() {
                             <p className="text-[11px] font-bold text-slate-900 line-clamp-1">{item.cI_ProductName}</p>
                             <p className="text-[10px] text-slate-400 font-medium">Qty: {item.cI_Qty}</p>
                         </div>
-                        <span className="text-xs font-bold text-slate-900">₹{item.cI_TotalAmount}</span>
+                        <span className="text-xs font-bold text-slate-900">${item.cI_TotalAmount}</span>
                     </div>
                 ))}
               </div>
@@ -255,11 +255,11 @@ export default function CheckoutPage() {
               <div className="space-y-4 mb-8 relative">
                 <div className="flex justify-between text-[11px] font-black text-slate-400 uppercase tracking-widest">
                   <span>Bag Total</span>
-                  <span className="text-slate-900">₹{cart.cM_SubTotalAmt}</span>
+                  <span className="text-slate-900">${cart.cM_SubTotalAmt}</span>
                 </div>
                 <div className="flex justify-between text-xs font-medium text-slate-500">
                   <span>Gst & Taxes</span>
-                  <span className="text-slate-900">₹{cart.cM_TaxAmt || 0}</span>
+                  <span className="text-slate-900">${cart.cM_TaxAmt || 0}</span>
                 </div>
                 <div className="flex justify-between text-xs font-medium text-slate-500">
                   <span>Standard Shipping</span>
@@ -268,14 +268,14 @@ export default function CheckoutPage() {
                 {cart.cM_DiscountAmt > 0 && (
                   <div className="flex justify-between text-xs font-bold text-rose-500 bg-rose-50 p-3 rounded-xl border border-rose-100">
                     <span className="flex items-center gap-2">Promo Applied</span>
-                    <span>- ₹{cart.cM_DiscountAmt}</span>
+                    <span>- ${cart.cM_DiscountAmt}</span>
                   </div>
                 )}
                 
                 <div className="pt-6 mt-6 border-t border-slate-100">
                     <div className="flex justify-between items-end">
                         <span className="text-sm font-bold text-slate-500">Grand Total</span>
-                        <span className="text-3xl font-serif font-bold text-primary tracking-tight">₹{cart.cM_GrandTotal}</span>
+                        <span className="text-3xl font-serif font-bold text-primary tracking-tight">${cart.cM_GrandTotal}</span>
                     </div>
                 </div>
               </div>

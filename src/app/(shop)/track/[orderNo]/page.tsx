@@ -152,7 +152,7 @@ export default function TrackOrderPage({ params }: { params: Promise<{ orderNo: 
                       <p className="text-xs text-slate-400 font-medium">Qty: {item.oI_Qty}</p>
                     </div>
                     <div className="text-right">
-                      <p className="font-serif font-bold text-slate-900 tracking-tight">₹{item.oI_TotalAmount}</p>
+                      <p className="font-serif font-bold text-slate-900 tracking-tight">${item.oI_TotalAmount}</p>
                     </div>
                   </div>
                 ))}
@@ -162,11 +162,11 @@ export default function TrackOrderPage({ params }: { params: Promise<{ orderNo: 
                 <div className="space-y-3">
                   <div className="flex justify-between text-xs font-medium text-slate-500">
                     <span>Subtotal</span>
-                    <span className="text-slate-900 font-bold">₹{master.oM_SubTotal}</span>
+                    <span className="text-slate-900 font-bold">${master.oM_SubTotal}</span>
                   </div>
                   <div className="flex justify-between text-xs font-medium text-slate-500">
                     <span>Tax & Duties</span>
-                    <span className="text-slate-900 font-bold">₹{master.oM_TaxAmount || 0}</span>
+                    <span className="text-slate-900 font-bold">${master.oM_TaxAmount || 0}</span>
                   </div>
                   <div className="flex justify-between text-xs font-medium text-emerald-600">
                     <span>Standard Shipping</span>
@@ -174,7 +174,7 @@ export default function TrackOrderPage({ params }: { params: Promise<{ orderNo: 
                   </div>
                   <div className="pt-4 border-t border-slate-200 flex justify-between items-baseline">
                     <span className="text-sm font-bold text-slate-900 uppercase tracking-widest">Grand Total</span>
-                    <span className="text-2xl font-serif font-bold text-primary">₹{master.oM_GrandTotal}</span>
+                    <span className="text-2xl font-serif font-bold text-primary">${master.oM_GrandTotal}</span>
                   </div>
                 </div>
               </div>

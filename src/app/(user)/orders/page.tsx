@@ -130,7 +130,7 @@ export default function MyOrdersPage() {
                     <div className="flex items-center justify-between w-full lg:w-auto lg:justify-end gap-12 pt-6 lg:pt-0 border-t lg:border-t-0 border-slate-100">
                       <div className="text-right">
                         <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1">Total Amount</p>
-                        <p className="text-3xl font-serif font-bold text-slate-900">₹{order.oM_GrandTotal}</p>
+                        <p className="text-3xl font-serif font-bold text-slate-900">${order.oM_GrandTotal}</p>
                       </div>
                       <Link 
                         href={`/track/${order.oM_OrderNo}`} 
