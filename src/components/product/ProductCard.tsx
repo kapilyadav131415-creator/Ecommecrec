@@ -27,13 +27,12 @@ export default function ProductCard({ product, onQuickAdd }: ProductCardProps) {
       ? Math.round(((originalPrice - sellingPrice) / originalPrice) * 100)
       : 0;
 
-  const formatINR = (amount: number) =>
-    new Intl.NumberFormat("en-IN", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(amount);
-
+ const formatINR = (amount: number) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(amount);
   return (
     <motion.div
       whileHover={{ y: -6 }}

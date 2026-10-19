@@ -154,9 +154,9 @@ export default function CartPage() {
                   {/* PRICE BOX */}
                   <div className="text-right">
                     {item.cI_ActualPrice > item.cI_UnitPrice && (
-                      <p className="text-[10px] text-slate-400 line-through">${item.cI_ActualPrice * item.cI_Qty}</p>
+                      <p className="text-[10px] text-slate-400 line-through">₹{item.cI_ActualPrice * item.cI_Qty}</p>
                     )}
-                    <p className="text-lg font-bold font-serif text-slate-900">${item.cI_TotalAmount}</p>
+                    <p className="text-lg font-bold font-serif text-slate-900">₹{item.cI_TotalAmount}</p>
                   </div>
                 </div>
               </div>
@@ -171,19 +171,19 @@ export default function CartPage() {
             <div className="space-y-4 text-sm opacity-90">
               <div className="flex justify-between">
                 <span>Subtotal</span>
-                <span>${cart.cM_SubTotalAmt}</span>
+                <span>₹{cart.cM_SubTotalAmt}</span>
               </div>
               <div className="flex justify-between">
                 <span>Tax</span>
-                <span>${cart.cM_TaxAmt || 0}</span>
+                <span>₹{cart.cM_TaxAmt || 0}</span>
               </div>
               <div className="flex justify-between text-emerald-400">
                 <span>Discount</span>
-                <span>-${cart.cM_DiscountAmt || 0}</span>
+                <span>-₹{cart.cM_DiscountAmt || 0}</span>
               </div>
               <div className="border-t border-white/10 pt-6 flex justify-between font-bold text-2xl font-serif">
                 <span>Total</span>
-                <span>${cart.cM_GrandTotal}</span>
+                <span>₹{cart.cM_GrandTotal}</span>
               </div>
             </div>
 
